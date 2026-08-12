@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选项决定你能否存活</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.4s;
+        }
+        /* 初始奶油黄背景 */
+        .cream-bg {
+            background-color: #fff6d9;
+        }
+        /* 黑屏页面 */
+        .black-bg {
+            background-color: #000;
+        }
+        /* 通关奶白吃美食页面 */
+        .milk-bg {
+            background-color: #fffdf8;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+        }
+        .face-main {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+        .title-text {
+            font-size: 26px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        .btn-box {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+        button {
+            padding: 16px 40px;
+            font-size: 22px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #ffdd99;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #ffcc66;
+            transform: scale(1.05);
+        }
+        /* 分屏选择页面样式 */
+        .split-wrap {
+            width: 100%;
+            display: flex;
+            position: relative;
+            margin-top: 30px;
+        }
+        .split-line {
+            width: 4px;
+            background: #444;
+            height: 400px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .split-middle-tip {
+            position: absolute;
+            left: 50%;
+            top: 180px;
+            transform: translateX(-50%);
+            background: #fff6d9;
+            padding: 6px 12px;
+            font-size: 20px;
+            white-space: nowrap;
+        }
+        .left-area, .right-area {
+            width: 50%;
+            padding: 30px 10px;
+        }
+        .split-face {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+        .split-desc {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+        /* 黑屏点赞复活界面 */
+        .revive-box {
+            color: white;
+            font-size: 28px;
+        }
+        .like-heart {
+            font-size: 90px;
+            margin-top: 30px;
+            cursor: pointer;
+            user-select: none;
+        }
+        /* 美食通关页面 */
+        #gameCanvas {
+            border: 2px solid #ddd;
+            background: #fff;
+        }
+        .end-btn-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .hide {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="cream-bg">
+    <!-- 页面1：初始主页 -->
+    <div id="pageStart" class="container">
+        <div class="face-main">😗</div>
+        <div class="title-text">选项决定你能否存活（1）</div>
+        <div class="btn-box">
+            <button onclick="startGame()">开始游玩</button>
+            <button onclick="exitBlack()">退出游戏</button>
+        </div>
+    </div>
+
+    <!-- 页面2：家访分屏选择 -->
+    <div id="page1" class="container hide">
+        <div class="split-wrap">
+            <div class="split-line"></div>
+            <div class="split-middle-tip">老师来家访了，请选择你认为正确的选项</div>
+            <div class="left-area">
+                <div class="split-face">🙂</div>
+                <div class="split-desc">穿校服</div>
+                <button onclick="selectRight1()">选择左边</button>
+            </div>
+            <div class="right-area">
+                <div class="split-face">😋</div>
+                <div class="split-desc">穿COS服</div>
+                <button onclick="selectWrong1()">选择右边</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面3：老师渴了 喝水选择 -->
+    <div id="page2" class="container hide">
+        <div class="split-wrap">
+            <div class="split-line"></div>
+            <div class="split-middle-tip">老师渴了，你要给他喝？</div>
+            <div class="left-area">
+                <div class="split-face">🙂</div>
+                <div class="split-desc">热水</div>
+                <button onclick="selectRight2()">选择左边</button>
+            </div>
+            <div class="right-area">
+                <div class="split-face">😋</div>
+                <div class="split-desc">酱油</div>
+                <button onclick="selectWrong2()">选择右边</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面4：台风选择 -->
+    <div id="page3" class="container hide">
+        <div class="split-wrap">
+            <div class="split-line"></div>
+            <div class="split-middle-tip">台风要来了，你选择</div>
+            <div class="left-area">
+                <div class="split-face">🙂</div>
+                <div class="split-desc">邀请老师在家避难</div>
+                <button onclick="selectWrong3()">选择左边</button>
+            </div>
+            <div class="right-area">
+                <div class="split-face">😋</div>
+                <div class="split-desc">让老师出去勇闯台风</div>
+                <button onclick="selectRight3()">选择右边</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面：死亡黑屏+点赞复活 -->
+    <div id="pageDead" class="container hide revive-box">
+        <div>给我点个赞复活</div>
+        <div class="like-heart" onclick="reviveGame()">❤️</div>
+    </div>
+
+    <!-- 通关美食小游戏页面 -->
+    <div id="pageWin" class="container hide">
+        <canvas id="gameCanvas" width="700" height="450"></canvas>
+        <div class="end-btn-group">
+            <button onclick="restartGame()">再玩一次</button>
+            <button onclick="exitBlack()">通关退出</button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量：复活次数，一共2次
+        let reviveCount = 2;
+        let currentPage = "pageStart";
+
+        // 切换页面工具
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll(".container").forEach(el => {
+                el.classList.add("hide");
+            })
+            // 显示目标页面
+            document.getElementById(pageId).classList.remove("hide");
+            currentPage = pageId;
+        }
+        // 切换背景样式
+        function setBg(className) {
+            document.body.className = className;
+        }
+
+        // 1. 初始页面按钮
+        function startGame() {
+            setBg("cream-bg");
+            switchPage("page1");
+        }
+        // 退出黑屏
+        function exitBlack() {
+            setBg("black-bg");
+            switchPage("pageDead");
+        }
+
+        // 死亡逻辑：消耗复活次数
+        function deadProcess() {
+            reviveCount--;
+            setBg("black-bg");
+            switchPage("pageDead");
+        }
+        // 点赞复活
+        function reviveGame() {
+            if (reviveCount < 0) {
+                alert("复活次数用完，游戏退出");
+                exitBlack();
+                return;
+            }
+            setBg("cream-bg");
+            // 根据当前剧情回到上一关
+            if(currentPage === "page1" || currentPage === "pageDead") switchPage("page1");
+            if(currentPage === "page2") switchPage("page2");
+            if(currentPage === "page3") switchPage("page3");
+        }
+
+        // ===== 第一关：家访 =====
+        function selectRight1() {
+            switchPage("page2");
+        }
+        function selectWrong1() {
+            alert("老师疑惑给家长打电话（全剧终）");
+            deadProcess();
+        }
+        // ===== 第二关：喝水 =====
+        function selectRight2() {
+            switchPage("page3");
+        }
+        function selectWrong2() {
+            alert("老师被酱油疼死了（全剧终）");
+            deadProcess();
+        }
+        // ===== 第三关：台风 =====
+        function selectWrong3() {
+            alert("老师觉得你胆小，再也不信你（全剧终）");
+            deadProcess();
+        }
+        function selectRight3() {
+            // 全部选对，进入美食小游戏
+            setBg("milk-bg");
+            switchPage("pageWin");
+            startEatGame();
+        }
+
+        // 重新游玩
+        function restartGame() {
+            reviveCount = 2;
+            setBg("cream-bg");
+            switchPage("pageStart");
+        }
+
+        // ========= 吃美食小游戏画布逻辑 =========
+        let canvas, ctx;
+        let player = { x: 350, y: 225, size: 40 };
+        let foodList = ["🍏","🥝","🍋","🍎","🍑","🍓","🍞","🥐","🥖","🧇","🍟","🍕"];
+        let foods = [];
+        let keyDown = {};
+
+        function startEatGame() {
+            canvas = document.getElementById("gameCanvas");
+            ctx = canvas.getContext("2d");
+            // 重置玩家位置
+            player.x = 350;
+            player.y = 225;
+            foods = [];
+            // 随机生成美食
+            for(let i=0; i<15; i++){
+                foods.push({
+                    text: foodList[Math.floor(Math.random()*foodList.length)],
+                    x: Math.random()*660 + 20,
+                    y: Math.random()*410 + 20,
+                    size: 36
+                })
+            }
+            // 监听键盘
+            window.addEventListener("keydown", e=> keyDown[e.key] = true);
+            window.addEventListener("keyup", e=> keyDown[e.key] = false);
+            gameLoop();
+        }
+
+        function gameLoop() {
+            // 清画布
+            ctx.clearRect(0,0,700,450);
+            // 移动控制
+            const speed = 4;
+            if(keyDown["ArrowUp"] && player.y>0) player.y -= speed;
+            if(keyDown["ArrowDown"] && player.y<410) player.y += speed;
+            if(keyDown["ArrowLeft"] && player.x>0) player.x -= speed;
+            if(keyDown["ArrowRight"] && player.x<660) player.x += speed;
+
+            // 绘制美食
+            foods.forEach((food,idx)=>{
+                ctx.font = `${food.size}px sans-serif`;
+                ctx.fillText(food.text, food.x, food.y);
+                // 碰撞检测吃掉食物
+                const dx = player.x - food.x;
+                const dy = player.y - food.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 35){
+                    foods.splice(idx,1);
+                }
+            })
+            // 绘制玩家小人🥳
+            ctx.font = `${player.size}px sans-serif`;
+            ctx.fillText("🥳", player.x, player.y);
+
+            // 全部吃完通关提示
+            if(foods.length === 0){
+                ctx.fillStyle = "#222";
+                ctx.font = "30px sans-serif";
+                ctx.fillText("全部美食吃完，通关成功！",200,220);
+            }
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>

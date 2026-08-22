@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试站点</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #000000;
+            background-image:
+                radial-gradient(circle at 20% 25%, rgba(80, 120, 255, 0.18), transparent 45%),
+                radial-gradient(circle at 80% 75%, rgba(255, 80, 180, 0.15), transparent 45%);
+            color: #ffffff;
+            font-family: "Microsoft YaHei", "PingFang SC", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 标题往上移：用 padding-top 比居中更靠上 */
+            justify-content: flex-start;
+            padding: 14vh 20px 10vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景细微星点 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 25% 30%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1px 1px at 70% 60%, rgba(255, 255, 255, 0.35), transparent),
+                radial-gradient(1px 1px at 45% 80%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 85% 20%, rgba(255, 255, 255, 0.3), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .main {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .title {
+            font-size: clamp(48px, 9vw, 104px);
+            font-weight: 800;
+            letter-spacing: 14px;
+            text-align: center;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 0%, #c9d6ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(120, 150, 255, 0.25);
+            animation: fadeDown 1s ease both;
+            user-select: none;
+        }
+
+        .subtitle {
+            font-size: clamp(18px, 2.4vw, 26px);
+            font-weight: 400;
+            letter-spacing: 6px;
+            color: rgba(255, 255, 255, 0.75);
+            text-align: center;
+            animation: fadeUp 1s 0.2s ease both;
+        }
+
+        .games {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 30px;
+            width: 100%;
+            animation: fadeUp 1s 0.4s ease both;
+        }
+
+        .game-btn {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 220px;
+            padding: 26px 44px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-decoration: none;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* 按钮内部光带流动 */
+        .game-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(80, 120, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .game-btn:hover::before {
+            left: 150%;
+        }
+
+        .game-btn:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+
+        /* 两个按钮各自的主题色 */
+        .game-btn.ball {
+            box-shadow: 0 0 0 1px rgba(80, 180, 255, 0.15);
+        }
+        .game-btn.ball:hover {
+            box-shadow: 0 10px 30px rgba(80, 180, 255, 0.35);
+        }
+
+        .game-btn.brick {
+            box-shadow: 0 0 0 1px rgba(255, 120, 180, 0.15);
+        }
+        .game-btn.brick:hover {
+            box-shadow: 0 10px 30px rgba(255, 120, 180, 0.35);
+        }
+
+        .game-btn .label {
+            font-size: 28px;
+        }
+
+        .game-btn .desc {
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding-top: 10vh;
+            }
+            .game-btn {
+                min-width: 80%;
+                padding: 22px 30px;
+            }
+        }
+
+        /* 左上角：返回主站 */
+        .corner-tl {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            z-index: 10;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            text-decoration: none;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .corner-tl:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 右上角：中转站 */
+        .corner-tr {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 10;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            text-decoration: none;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .corner-tr:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 右下角：制作署名 */
+        .corner-br {
+            position: fixed;
+            right: 22px;
+            bottom: 18px;
+            z-index: 10;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.45);
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左上角：返回主站 -->
+    <a class="corner-tl" href="https://cqxjw-class7-2020.pages.dev" title="返回主站">返回主站</a>
+    <!-- 右上角：中转站 -->
+    <a class="corner-tr" href="#" title="中转站">中转站</a>
+    <!-- 右下角：制作署名 -->
+    <div class="corner-br">制作:zzy</div>
+
+    <main class="main">
+        <h1 class="title">测试站点</h1>
+        <p class="subtitle">提供两种小游戏</p>
+
+        <div class="games">
+            <a class="game-btn ball" href="https://minigame1-b5d.pages.dev/" target="_blank" rel="noopener">
+                <span class="label">选择题小游戏</span>
+                <span class="desc">点击进入</span>
+            </a>
+            <a class="game-btn brick" href="https://minigame2-ddh.pages.dev/" target="_blank" rel="noopener">
+                <span class="label">炫彩打砖块</span>
+                <span class="desc">点击进入</span>
+            </a>
+        </div>
+    </main>
+</body>
+</html>
